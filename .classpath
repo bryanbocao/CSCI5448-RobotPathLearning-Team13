@@ -13,7 +13,15 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Hibernate Library"/>
-	<classpathentry kind="lib" path="/Users/fernando/Google Drive/CU Boulder/Spring 16/CSCI 5488/Java/mysql-connector-java-5.1.35/mysql-connector-java-5.1.35-bin.jar"/>
+	<classpathentry kind="lib" path="/Users/fernando/Google Drive/CU Boulder/Spring 16/CSCI 5488/Java/mysql-connector-java-5.1.35/mysql-connector-java-5.1.35-bin.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Hibernate Library">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
