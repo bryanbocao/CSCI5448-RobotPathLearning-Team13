@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>Simple Sidebar - Start Bootstrap Template</title>
+<title>Robot Path Learning</title>
 
 <!-- Bootstrap Core CSS -->
 <link
@@ -66,6 +66,8 @@
 		src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script type="text/javascript"
 		src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		
+	<decorator:getProperty property="page.siteMeshJavaScript"></decorator:getProperty>		
 
 	<!-- Menu Toggle Script -->
 	<script>
