@@ -44,15 +44,15 @@ function processObstacle(e){
 
 	var ctx = cnv.get(0).getContext('2d');
 
-	if(e.button == 0 && !is_obstacle){
-		//left, draw an obstacle if one is not already present, otherwise do nothing
+	if(!is_obstacle){
+		//draw an obstacle if one is not already present, otherwise do nothing
 		ctx.fillStyle="#000000";
 		ctx.fillRect(current_cell.x*60+1, current_cell.y*60+1, 58, 58);
 		// add this cell to the obstacles list
 		obstacles.push(current_cell);
 	}
-	else if(e.button == 2 && is_obstacle){
-		//right, remove an obstacle if one is present, otherwise do nothing
+	else{
+		//remove an obstacle if one is present, otherwise do nothing
 		ctx.clearRect(current_cell.x*60+1, current_cell.y*60+1, 58, 58);
 		// remove this cell from the obstacles list
 		idx = -1;
