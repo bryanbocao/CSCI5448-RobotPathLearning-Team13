@@ -5,6 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
 @Entity
 public class User {
 	
@@ -38,6 +42,23 @@ public class User {
 	}
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+	
+	public boolean isValidUser(String username, String password) {
+		boolean result = false;
+		
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		Session session = sessionFactory.openSession();
+		Query query = session.createQuery("select count(1) from User where password= :passwd and username= :name");
+		query.setString("passwd", password);
+		query.setString("name", username);
+		if( query.uniqueResult() != null ){
+			// user found
+			System.out.println("Found user.");
+			result = true;
+		}
+		sessionFactory.close();
+		return result;
 	}
 
 }

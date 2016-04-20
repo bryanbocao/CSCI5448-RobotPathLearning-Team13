@@ -4,6 +4,7 @@
 	<!-- Any urls that are excluded will never be decorated by Sitemesh -->
     <excludes>
         <pattern>/login</pattern>
+        <pattern>/register</pattern>
     </excludes>
 	
 	<decorator name="main-layout" page="main-layout.jsp">
