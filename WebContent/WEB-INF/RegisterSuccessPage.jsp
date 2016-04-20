@@ -9,22 +9,27 @@
 <title>Registration Success</title>
 </head>
 <body>
-    <div align="center">
-        <table border="0">
-            <tr>
-                <td colspan="2" align="center"><h2>Registration Complete!</h2></td>
-            </tr>
-            <tr>
-                <td colspan="2" align="center">
-                    <h3>Thank you for registering! Here's the review of your details:</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>User Name:</td>
-                <td>${userForm.username}</td>
-            </tr>
- 
-        </table>
-    </div>
+	<!--register-->
+	<div id="registerModal" class="modal show" tabindex="-1" role="dialog"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="text-center">Registration Successful!</h1>
+				</div>
+				<div class="modal-body">
+					<form:form id="linkForm" method="get" action="login"
+						class="form col-md-12 center-block" commandName="userForm">
+						
+						<div class="form-group">
+							<button class="btn btn-primary btn-lg btn-block">Login</button>
+						</div>
+					</form:form>
+				</div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div>
+
 </body>
 </html>

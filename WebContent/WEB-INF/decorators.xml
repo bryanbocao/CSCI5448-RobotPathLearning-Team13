@@ -7,7 +7,7 @@
         <pattern>/register</pattern>
     </excludes>
 	
-	<decorator name="main-layout" page="main-layout.jsp">
+	<decorator name="sidebar-layout" page="sidebar-layout.jsp">
         <pattern>/*</pattern>     
     </decorator>	
 </decorators>

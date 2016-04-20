@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -16,12 +18,24 @@ public class User {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 	
+	@Size(min=3, max=30)
+	@NotNull
 	private String username;
 	
+	@NotNull
+	@Size(min=4, max=12)
 	private String password;
 	
 	private String userType;
 	
+	public User(String username, String password){
+		this.username = username;
+		this.password = password;
+	}
+	
+	public User() {
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -48,7 +62,7 @@ public class User {
 		boolean result = false;
 		
 		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		Session session = sessionFactory.openSession();
+		Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery("select count(1) from User where password= :passwd and username= :name");
 		query.setString("passwd", password);
 		query.setString("name", username);
@@ -57,8 +71,18 @@ public class User {
 			System.out.println("Found user.");
 			result = true;
 		}
-		sessionFactory.close();
 		return result;
 	}
 
+	public void registerUser(String username, String password) {
+		
+		User new_user = new User(username, password);
+		
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		session.save(new_user);
+		session.getTransaction().commit();
+		
+	}
 }

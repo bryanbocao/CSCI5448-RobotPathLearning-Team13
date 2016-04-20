@@ -23,5 +23,10 @@ public class UserService
 		{
 				return user.isValidUser(username, password);
 		}
+		
+		public void registerUser(String username, String password) throws SQLException
+		{
+				user.registerUser(username, password);
+		}
 
 }

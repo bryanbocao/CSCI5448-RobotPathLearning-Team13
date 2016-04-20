@@ -1,50 +1,50 @@
 package com.robot.controller;
 
+import java.sql.SQLException;
 import java.util.Map;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.robot.hibernate.HibernateUtil;
+import com.robot.delegate.RegistrationDelegate;
 import com.robot.hibernate.User;
- 
 
 @Controller
 @RequestMapping(value = "/register")
-public class RegistrationController{
+public class RegistrationController {
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String viewRegistration(Map<String, Object> model) {
-        User userForm = new User();    
-        model.put("userForm", userForm);
-         
-        return "RegisterPage";
-    }
-     
-    @RequestMapping(method = RequestMethod.POST)
-    public String processRegistration(@ModelAttribute("userForm") User user,
-            Map<String, Object> model) {
-         
-		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-    	Session session = sessionFactory.openSession();
-    	session.beginTransaction();
-    	
-    	session.save(user);
-    	
-    	session.getTransaction().commit();
-    	session.close();
-    	sessionFactory.close();
-         
-        // for testing purpose:
-        System.out.println("username: " + user.getUsername());
-        System.out.println("password: " + user.getPassword());
-         
-        return "RegisterSuccessPage";
-    }
+	@Autowired
+	private RegistrationDelegate registrationDelegate;
+
+	@RequestMapping(method = RequestMethod.GET)
+	public String viewRegistration(Map<String, Object> model) {
+		User userForm = new User();
+		model.put("userForm", userForm);
+
+		return "RegisterPage";
+	}
+
+	@RequestMapping(method = RequestMethod.POST)
+	public String processRegistration(@Valid @ModelAttribute("userForm") User user, BindingResult bindingResult) {
+
+		System.out.println("testing...");
+		if (bindingResult.hasErrors()) {
+			System.out.println("Validation errors...");
+			return "RegisterPage";
+		}
+
+		try {
+			registrationDelegate.registerUser(user.getUsername(), user.getPassword());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return "RegisterSuccessPage";
+	}
 }
-
-
