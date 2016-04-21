@@ -55,6 +55,7 @@ $(document).keydown(function(e) {
 });
 
 var robot = {
+	position_history : [],
 	position : {
 		x : 0,
 		y : 9
@@ -81,6 +82,9 @@ var robot = {
 		ctx.fillRect(robot.getImagePosition().x, robot.getImagePosition().y,
 				robot.image_size, robot.image_size);
 	},
+	saveCurrentPosition : function() {
+		robot.position_history.push({x : robot.position.x, y : robot.position.y});
+	},
 	moveTo : function(e) {
 		current_cell = grid.getSelectedCell(e);
 
@@ -105,7 +109,7 @@ var robot = {
 				return;
 			}
 		
-		
+		robot.saveCurrentPosition();
 		robot.position.x--;
 	},
 	moveRight : function() {
@@ -116,7 +120,7 @@ var robot = {
 				return;
 			}
 		
-		
+		robot.saveCurrentPosition();
 		robot.position.x++;
 
 
@@ -129,7 +133,7 @@ var robot = {
 				return;
 			}
 		
-		
+		robot.saveCurrentPosition();
 		robot.position.y++;
 
 	},
@@ -141,7 +145,7 @@ var robot = {
 				return;
 			}
 		
-		
+		robot.saveCurrentPosition();
 		robot.position.y--;
 	}
 };
