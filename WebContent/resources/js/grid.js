@@ -16,12 +16,14 @@ $(document).ready(function() {
 			$("#toggle-mode").text('Inserting Obstacles')
 		}
 	});
+	
+	// Save button to save a path
 
 });
 
 // bind the arrow keys to control the robot
 $(document).keydown(function(e) {
-	if(!obstacle_mode){
+	if(!obstacle_mode && !robot.finished){
 		// erase the robot
 		robot.clear();
 		
@@ -44,6 +46,7 @@ $(document).keydown(function(e) {
 			break;
 	
 		default:
+			robot.draw();
 			return; // exit this handler for other keys
 		}
 		

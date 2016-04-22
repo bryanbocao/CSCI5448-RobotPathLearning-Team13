@@ -31,9 +31,11 @@ public class User {
 	public User(String username, String password){
 		this.username = username;
 		this.password = password;
+		this.userType = "user";
 	}
 	
 	public User() {
+		this.userType = "user";
 	}
 
 	public int getId() {
@@ -63,14 +65,18 @@ public class User {
 		
 		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
 		Query query = session.createQuery("select count(1) from User where password= :passwd and username= :name");
+		System.out.println("Looking for user: " + username + " with password: " + password);
 		query.setString("passwd", password);
 		query.setString("name", username);
-		if( query.uniqueResult() != null ){
+		if( (Long)query.uniqueResult() != 0 ){
 			// user found
 			System.out.println("Found user.");
 			result = true;
 		}
+		session.getTransaction().commit();
+
 		return result;
 	}
 
