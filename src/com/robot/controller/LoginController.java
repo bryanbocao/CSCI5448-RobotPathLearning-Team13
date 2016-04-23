@@ -39,14 +39,14 @@ public class LoginController {
 			if(isValidUser)
 			{
 					System.out.println("User Login Successful.");
-					request.setAttribute("loggedInUser", loginBean.getUsername());
-					model = new ModelAndView("LoginPage");
+					request.setAttribute("success", loginBean.getUsername());
+					model = new ModelAndView("redirect:/map");
 			}
 			else
 			{
 					System.out.println("User Login Failed.");
 					model = new ModelAndView("LoginPage");
-					request.setAttribute("message", "Invalid credentials!!");
+					request.setAttribute("error", "Invalid credentials.");
 			}
 		}
 		catch(Exception e){
