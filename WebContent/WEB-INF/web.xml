@@ -14,14 +14,15 @@
  
   <servlet-mapping>
  	<servlet-name>spring-dispatcher</servlet-name>
-        <url-pattern>/</url-pattern>
         <url-pattern>/login</url-pattern>
+        <url-pattern>/map</url-pattern>
+        <url-pattern>/register</url-pattern>
+        <url-pattern>/profile</url-pattern>
   </servlet-mapping>
   
-     <welcome-file-list>
+   <welcome-file-list>
        <welcome-file>login</welcome-file>
-    </welcome-file-list>
-
+       </welcome-file-list>
   
   
 <filter>
