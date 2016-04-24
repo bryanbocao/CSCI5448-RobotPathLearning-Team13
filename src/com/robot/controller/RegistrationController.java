@@ -41,10 +41,23 @@ public class RegistrationController {
 	public ModelAndView processRegistration(HttpSession session,
 			@Valid @ModelAttribute("userForm") User user, BindingResult bindingResult) {
 
-		System.out.println("testing...");
 		if (bindingResult.hasErrors()) {
 			System.out.println("Validation errors...");
-			return new ModelAndView("RegisterPage");
+			ModelAndView model = new ModelAndView("RegisterPage");
+			model.getModel().put("errormessage", "Error: Username or password are too short.");
+			return model;
+		}
+		
+		// check if this user already exists
+		try{
+			if(loginDelegate.getUserByUsername(user.getUsername()) != null){
+				// username already exists
+				ModelAndView model = new ModelAndView("RegisterPage");
+				model.getModel().put("errormessage", "Error: Username already exists.");
+				return model;
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
 		}
 
 		try {

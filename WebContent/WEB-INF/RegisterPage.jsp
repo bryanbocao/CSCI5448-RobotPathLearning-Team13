@@ -57,6 +57,12 @@
 			</div>
 		</div>
 	</div>
+	
+	<c:if test="${errormessage != null}">
+	<script>
+		alert("${errormessage}");
+	</script>
+	</c:if>
 
 </body>
 </html>
