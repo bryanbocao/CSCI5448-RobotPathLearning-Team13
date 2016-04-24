@@ -25,7 +25,9 @@ $(document).ready(function() {
 			// user has finished the path, post the path to the sever via ajax:
 			var PathDATA = {
 				cells : robot.position_history,
-				map : { obstacles : obstacle.obstacle_list}
+				map : {
+					obstacles : obstacle.obstacle_list
+				}
 			};
 
 			$.ajax({
@@ -45,7 +47,39 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
+	$("#loadLatest").click(function(e) {
+		// Load the latest user path
+		$.ajax({
+			type : 'GET',
+			url : '/RobotLearning/map/loadLatest',
+			success : function(data) {
+				loadMapAndPath(data)
+			},
+			error : function(xhr, ajaxOptions, error) {
+				alert('error loading latest path: ' + error);
+			}
+		})
+	});
+
 });
+
+function loadMapAndPath(data) {
+	console.log(data);
+	// draw all the obstacles in the map:
+	$.each(data.map.obstacles, function(index, value) {
+		obstacle.drawObstacle(value);
+	});
+
+	// now animate the robot though the path
+	var time = 500;
+	$.each(data.cells, function(index, value) {
+		setTimeout(function() {
+			robot.moveTo(value);
+		}, time);
+		time += 500;
+	});
+
+}
 
 // bind the arrow keys to control the robot
 $(document).keydown(function(e) {
@@ -109,6 +143,7 @@ var robot = {
 	checkFinished : function() {
 		if (robot.position.x == 9 && robot.position.y == 0) {
 			robot.finished = true;
+			robot.saveCurrentPosition();
 		}
 	},
 	clear : function() {
@@ -123,8 +158,8 @@ var robot = {
 			y : robot.position.y
 		});
 	},
-	moveTo : function(e) {
-		current_cell = grid.getSelectedCell(e);
+	moveTo : function(current_cell) {
+		// current_cell = grid.getSelectedCell(e);
 
 		if (current_cell.x == robot.position.x
 				&& current_cell.y == robot.position.y) {
@@ -325,14 +360,29 @@ var obstacle = {
 		});
 		return ret;
 	},
+	drawObstacle : function(current_cell) {
+		var cnv = $("#cnv");
+		var ctx = cnv.get(0).getContext('2d');
+
+		ctx.fillStyle = "#000000";
+		ctx.fillRect(current_cell.x * grid.gridOptions.majorLines.separation
+				+ 1, current_cell.y * grid.gridOptions.majorLines.separation
+				+ 1, grid.gridOptions.majorLines.separation - 2,
+				grid.gridOptions.majorLines.separation - 2);
+	},
+	removeObstacle : function(current_cell) {
+		var cnv = $("#cnv");
+		var ctx = cnv.get(0).getContext('2d');
+		ctx.clearRect(current_cell.x * grid.gridOptions.majorLines.separation
+				+ 1, current_cell.y * grid.gridOptions.majorLines.separation
+				+ 1, grid.gridOptions.majorLines.separation - 2,
+				grid.gridOptions.majorLines.separation - 2);
+	},
 	processObstacle : function(e) {
 
 		current_cell = grid.getSelectedCell(e);
 
 		is_obstacle = obstacle.checkCellHasObstacle(current_cell);
-
-		var cnv = $("#cnv");
-		var ctx = cnv.get(0).getContext('2d');
 
 		if (!grid.checkCanDraw(current_cell)) {
 			return;
@@ -341,27 +391,12 @@ var obstacle = {
 		if (!is_obstacle) {
 			// draw an obstacle if one is not already present, otherwise do
 			// nothing
-			ctx.fillStyle = "#000000";
-			ctx
-					.fillRect(current_cell.x
-							* grid.gridOptions.majorLines.separation + 1,
-							current_cell.y
-									* grid.gridOptions.majorLines.separation
-									+ 1,
-							grid.gridOptions.majorLines.separation - 2,
-							grid.gridOptions.majorLines.separation - 2);
+			obstacle.drawObstacle(current_cell);
 			// add this cell to the obstacles list
 			obstacle.obstacle_list.push(current_cell);
 		} else {
 			// remove an obstacle if one is present, otherwise do nothing
-			ctx
-					.clearRect(current_cell.x
-							* grid.gridOptions.majorLines.separation + 1,
-							current_cell.y
-									* grid.gridOptions.majorLines.separation
-									+ 1,
-							grid.gridOptions.majorLines.separation - 2,
-							grid.gridOptions.majorLines.separation - 2);
+			obstacle.removeObstacle(current_cell)
 			// remove this cell from the obstacles list
 			idx = -1;
 			$.each(obstacle.obstacle_list, function(index, value) {

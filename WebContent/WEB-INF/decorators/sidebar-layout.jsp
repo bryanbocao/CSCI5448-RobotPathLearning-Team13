@@ -50,8 +50,8 @@
 					<div class="col-lg-12">
 						<decorator:body />
 
-						<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle
-							Menu</a>
+					<!-- 	<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle
+							Menu</a> -->
 					</div>
 				</div>
 			</div>
@@ -70,12 +70,12 @@
 	<decorator:getProperty property="page.siteMeshJavaScript"></decorator:getProperty>		
 
 	<!-- Menu Toggle Script -->
-	<script>
+<!-- 	<script>
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
-    </script>
+    </script> -->
 
 </body>
 

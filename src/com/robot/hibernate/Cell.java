@@ -1,5 +1,6 @@
 package com.robot.hibernate;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,8 +12,13 @@ import javax.persistence.ManyToMany;
 
 @Entity
 @IdClass(Position.class)
-public class Cell {
+public class Cell implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	private Integer x;
 	

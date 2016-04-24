@@ -34,6 +34,10 @@ public class MapController {
 		}
 
 		ModelAndView model = new ModelAndView("views/MapPage");
+
+		if(user.getPaths().size() > 0){
+			model.getModel().put("hasPaths", true);
+		}
 		return model;
 	}
 
@@ -51,6 +55,19 @@ public class MapController {
 		}
 
 		return "{\"status\": \"success\"}";
+	}
+	
+	@RequestMapping(value = "loadLatest", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody Path post(HttpSession session) {
+		// find the current user
+		Path path = null;
+		User user = (User) session.getAttribute("USER");
+		if (user != null && user.getPaths().size() > 0) {
+			path = user.getPaths().get(user.getPaths().size()-1);
+		}
+		
+		return path;
+	
 	}
 
 }
