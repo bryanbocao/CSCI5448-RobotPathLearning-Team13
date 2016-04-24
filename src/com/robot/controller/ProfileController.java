@@ -3,6 +3,7 @@ package com.robot.controller;
 import java.sql.SQLException;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,22 @@ import com.robot.hibernate.User;
 public class ProfileController {
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView profile() {
-		String message = "Cornwell";
-		ModelAndView model = new ModelAndView("views/ProfilePage","message", message);
-		return model;
+	public ModelAndView profile(HttpSession session) {
+		
+		
+		User user = (User) session.getAttribute("USER");
+		if (user != null) {
+			System.out.println("current user name: " + user.getUsername() + " id: " + user.getId());
+			String message = user.getUsername();
+			//String message = "Cornwell";
+			ModelAndView model = new ModelAndView("views/ProfilePage","message", message);
+			return model;
+		}else{
+			// has not logged in yet
+			return new ModelAndView("redirect:/login");
+		}
+		
+		
 	}
 
 }
