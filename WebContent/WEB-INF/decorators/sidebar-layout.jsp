@@ -1,6 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator"
 	prefix="decorator"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+	
 
 
 <!DOCTYPE html>
@@ -38,7 +40,7 @@
 				<li><a href="#">My Profile</a></li>
 				<li><a href="#">New Path</a></li>
 				<li><a href="#">My Paths</a></li>
-				<li><a href="#">Logout</a></li>
+				<li><a id="#btnlogout" href="<spring:url value="/login/logout"/>">Logout</a></li>
 			</ul>
 		</div>
 		<!-- /#sidebar-wrapper -->
@@ -76,6 +78,8 @@
         $("#wrapper").toggleClass("toggled");
     });
     </script> -->
+    
+
 
 </body>
 

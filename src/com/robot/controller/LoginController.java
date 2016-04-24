@@ -29,6 +29,17 @@ public class LoginController {
 		model.addObject("loginBean", loginBean);
 		return model;
 	}
+	
+	@RequestMapping(value = "logout", method = RequestMethod.GET)
+	public ModelAndView logout(HttpSession session) {
+		
+		session.removeAttribute("USER");
+
+		ModelAndView model = new ModelAndView("redirect:/login");
+		
+		return model;
+
+	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView executeLogin(HttpSession session, HttpServletRequest request, HttpServletResponse response, 
