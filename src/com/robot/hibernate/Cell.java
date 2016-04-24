@@ -23,6 +23,9 @@ public class Cell {
 	@ManyToMany(mappedBy="cells")
 	private Set<Path> paths = new HashSet<Path>();
 	
+	@ManyToMany(mappedBy="obstacles")
+	private Set<Map> maps = new HashSet<Map>();
+	
 	public int getX() {
 		return x;
 	}

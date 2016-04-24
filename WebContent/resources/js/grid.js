@@ -23,18 +23,19 @@ $(document).ready(function() {
 			alert("The robot must finish the map in order to save the path.");
 		} else {
 			// user has finished the path, post the path to the sever via ajax:
-			var POSTdata = {
+			var PathDATA = {
 				cells : robot.position_history,
+				map : { obstacles : obstacle.obstacle_list}
 			};
 
 			$.ajax({
 				type : 'POST',
 				contentType : "application/json",
-				url : '/RobotLearning/map/save',
+				url : '/RobotLearning/map/savePath',
 				dataType : 'json',
-				data : JSON.stringify(POSTdata),
+				data : JSON.stringify(PathDATA),
 				success : function(data) {
-					alert('path saved successfully.')
+					alert('path and map saved successfully.');
 				},
 				error : function(xhr, ajaxOptions, error) {
 					alert('error saving path: ' + error);

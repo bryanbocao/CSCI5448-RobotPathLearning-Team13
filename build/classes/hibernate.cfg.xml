@@ -30,7 +30,7 @@
         <!-- Mention here all the model classes along with their package name -->
  		<mapping class="com.robot.hibernate.User"/>
  		<mapping class="com.robot.hibernate.Cell"/>
-  		<mapping class="com.robot.hibernate.Obstacle"/>
+  		<mapping class="com.robot.hibernate.Map"/>
   		<mapping class="com.robot.hibernate.Path"/>
   		
  		

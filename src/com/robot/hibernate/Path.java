@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -37,6 +38,17 @@ public class Path implements Serializable{
 	
 	public Path(List<Cell> cells){
 		this.cells = cells;
+	}
+	
+	@OneToOne(cascade= {CascadeType.ALL})
+	private Map map;
+
+	public Map getMap() {
+		return map;
+	}
+
+	public void setMap(Map map) {
+		this.map = map;
 	}
 
 	@ManyToOne

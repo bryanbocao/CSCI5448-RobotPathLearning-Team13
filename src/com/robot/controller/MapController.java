@@ -21,32 +21,35 @@ public class MapController {
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView map(HttpSession session) {
 
-	    User user = (User) session.getAttribute("USER");
-	    if(user!=null){
-	    	System.out.println("current user name: " + user.getUsername() + " id: " + user.getId());
-	    	System.out.println(user.getUsername() + "has " + user.getPaths().size() + " paths with " + 
-	    	user.getPaths().get(0).getCells().size() + " cells");
-	    }
+		User user = (User) session.getAttribute("USER");
+		if (user != null) {
+			System.out.println("current user name: " + user.getUsername() + " id: " + user.getId());
+			if (user.getPaths().size() > 0) {
+				System.out.println(user.getUsername() + "has " + user.getPaths().size() + " paths with "
+						+ user.getPaths().get(0).getCells().size() + " cells");
+			}
+		}else{
+			// has not logged in yet
+			return new ModelAndView("redirect:/login");
+		}
 
 		ModelAndView model = new ModelAndView("views/MapPage");
 		return model;
 	}
 
-	@RequestMapping(value = "save", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "savePath", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String post(HttpSession session, @RequestBody Path path) {
 		System.out.println("Recieved request to save a path with :" + path.getCells().size() + " cells.");
 		for (Cell c : path.getCells()) {
 			System.out.println("Cell: ( " + c.getX() + "," + c.getY() + " )");
 		}
-	    User user = (User) session.getAttribute("USER");
-	    if(user != null){
-	    	path.setUser(user);
-	    	user.getPaths().add(path);
-	    	path.save();
-	    }
-		
+		User user = (User) session.getAttribute("USER");
+		if (user != null) {
+			path.setUser(user);
+			user.getPaths().add(path);
+			path.save();
+		}
+
 		return "{\"status\": \"success\"}";
 	}
 
