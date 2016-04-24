@@ -16,42 +16,103 @@ $(document).ready(function() {
 			$("#toggle-mode").text('Inserting Obstacles')
 		}
 	});
-	
+
 	// Save button to save a path
+	$("#save").click(function(e) {
+		if (!robot.finished) {
+			alert("The robot must finish the map in order to save the path.");
+		} else {
+			// user has finished the path, post the path to the sever via ajax:
+			var PathDATA = {
+				cells : robot.position_history,
+				map : {
+					obstacles : obstacle.obstacle_list
+				}
+			};
+
+			$.ajax({
+				type : 'POST',
+				contentType : "application/json",
+				url : '/RobotLearning/map/savePath',
+				dataType : 'json',
+				data : JSON.stringify(PathDATA),
+				success : function(data) {
+					alert('path and map saved successfully.');
+				},
+				error : function(xhr, ajaxOptions, error) {
+					alert('error saving path: ' + error);
+				}
+			})
+		}
+		e.preventDefault();
+	});
+
+	$("#loadLatest").click(function(e) {
+		// Load the latest user path
+		$.ajax({
+			type : 'GET',
+			url : '/RobotLearning/map/loadLatest',
+			success : function(data) {
+				loadMapAndPath(data)
+			},
+			error : function(xhr, ajaxOptions, error) {
+				alert('error loading latest path: ' + error);
+			}
+		})
+	});
 
 });
 
+function loadMapAndPath(data) {
+	console.log(data);
+	// draw all the obstacles in the map:
+	$.each(data.map.obstacles, function(index, value) {
+		obstacle.drawObstacle(value);
+	});
+
+	// now animate the robot though the path
+	var time = 500;
+	$.each(data.cells, function(index, value) {
+		setTimeout(function() {
+			robot.moveTo(value);
+		}, time);
+		time += 500;
+	});
+
+}
+
 // bind the arrow keys to control the robot
 $(document).keydown(function(e) {
-	if(!obstacle_mode && !robot.finished){
+	if (!obstacle_mode && !robot.finished) {
 		// erase the robot
 		robot.clear();
-		
+
 		// update it's position
 		switch (e.which) {
 		case 37: // left
 			robot.moveLeft();
 			break;
-	
+
 		case 38: // up
 			robot.moveUp();
 			break;
-	
+
 		case 39: // right
 			robot.moveRight();
 			break;
-	
+
 		case 40: // down
 			robot.moveDown();
 			break;
-	
+
 		default:
 			robot.draw();
 			return; // exit this handler for other keys
 		}
-		
+
 		// draw in the new position;
 		robot.draw();
+		robot.checkFinished();
 
 	}
 	e.preventDefault(); // prevent the default action (scroll / move caret)
@@ -79,6 +140,12 @@ var robot = {
 		ctx.drawImage(image, robot.getImagePosition().x, robot
 				.getImagePosition().y, robot.image_size, robot.image_size);
 	},
+	checkFinished : function() {
+		if (robot.position.x == 9 && robot.position.y == 0) {
+			robot.finished = true;
+			robot.saveCurrentPosition();
+		}
+	},
 	clear : function() {
 		var ctx = document.getElementById('cnv').getContext('2d');
 		ctx.fillStyle = "#FFFFFF";
@@ -86,10 +153,13 @@ var robot = {
 				robot.image_size, robot.image_size);
 	},
 	saveCurrentPosition : function() {
-		robot.position_history.push({x : robot.position.x, y : robot.position.y});
+		robot.position_history.push({
+			x : robot.position.x,
+			y : robot.position.y
+		});
 	},
-	moveTo : function(e) {
-		current_cell = grid.getSelectedCell(e);
+	moveTo : function(current_cell) {
+		// current_cell = grid.getSelectedCell(e);
 
 		if (current_cell.x == robot.position.x
 				&& current_cell.y == robot.position.y) {
@@ -106,48 +176,57 @@ var robot = {
 	},
 	moveLeft : function() {
 		// check if we can move in that direction
-		if(robot.position.x - 1 < 0 ||
-			obstacle.checkCellHasObstacle({x: robot.position.x - 1, y: robot.position.y})){
-				// end of grid, or there is an obstacle there, cannot move
-				return;
-			}
-		
+		if (robot.position.x - 1 < 0 || obstacle.checkCellHasObstacle({
+			x : robot.position.x - 1,
+			y : robot.position.y
+		})) {
+			// end of grid, or there is an obstacle there, cannot move
+			return;
+		}
+
 		robot.saveCurrentPosition();
 		robot.position.x--;
 	},
 	moveRight : function() {
 		// check if we can move in that direction
-		if(robot.position.x + 1 > grid.gridOptions.size.x - 1 ||
-			obstacle.checkCellHasObstacle({x: robot.position.x + 1, y: robot.position.y})){
-				// end of grid, or there is an obstacle there, cannot move
-				return;
-			}
-		
+		if (robot.position.x + 1 > grid.gridOptions.size.x - 1
+				|| obstacle.checkCellHasObstacle({
+					x : robot.position.x + 1,
+					y : robot.position.y
+				})) {
+			// end of grid, or there is an obstacle there, cannot move
+			return;
+		}
+
 		robot.saveCurrentPosition();
 		robot.position.x++;
-
 
 	},
 	moveDown : function() {
 		// check if we can move in that direction
-		if(robot.position.y + 1 > grid.gridOptions.size.y - 1 ||
-			obstacle.checkCellHasObstacle({x: robot.position.x, y: robot.position.y+1})){
-				// end of grid, or there is an obstacle there, cannot move
-				return;
-			}
-		
+		if (robot.position.y + 1 > grid.gridOptions.size.y - 1
+				|| obstacle.checkCellHasObstacle({
+					x : robot.position.x,
+					y : robot.position.y + 1
+				})) {
+			// end of grid, or there is an obstacle there, cannot move
+			return;
+		}
+
 		robot.saveCurrentPosition();
 		robot.position.y++;
 
 	},
 	moveUp : function() {
 		// check if we can move in that direction
-		if(robot.position.y - 1 < 0 ||
-			obstacle.checkCellHasObstacle({x: robot.position.x, y: robot.position.y-1})){
-				// end of grid, or there is an obstacle there, cannot move
-				return;
-			}
-		
+		if (robot.position.y - 1 < 0 || obstacle.checkCellHasObstacle({
+			x : robot.position.x,
+			y : robot.position.y - 1
+		})) {
+			// end of grid, or there is an obstacle there, cannot move
+			return;
+		}
+
 		robot.saveCurrentPosition();
 		robot.position.y--;
 	}
@@ -281,14 +360,29 @@ var obstacle = {
 		});
 		return ret;
 	},
+	drawObstacle : function(current_cell) {
+		var cnv = $("#cnv");
+		var ctx = cnv.get(0).getContext('2d');
+
+		ctx.fillStyle = "#000000";
+		ctx.fillRect(current_cell.x * grid.gridOptions.majorLines.separation
+				+ 1, current_cell.y * grid.gridOptions.majorLines.separation
+				+ 1, grid.gridOptions.majorLines.separation - 2,
+				grid.gridOptions.majorLines.separation - 2);
+	},
+	removeObstacle : function(current_cell) {
+		var cnv = $("#cnv");
+		var ctx = cnv.get(0).getContext('2d');
+		ctx.clearRect(current_cell.x * grid.gridOptions.majorLines.separation
+				+ 1, current_cell.y * grid.gridOptions.majorLines.separation
+				+ 1, grid.gridOptions.majorLines.separation - 2,
+				grid.gridOptions.majorLines.separation - 2);
+	},
 	processObstacle : function(e) {
 
 		current_cell = grid.getSelectedCell(e);
 
 		is_obstacle = obstacle.checkCellHasObstacle(current_cell);
-
-		var cnv = $("#cnv");
-		var ctx = cnv.get(0).getContext('2d');
 
 		if (!grid.checkCanDraw(current_cell)) {
 			return;
@@ -297,27 +391,12 @@ var obstacle = {
 		if (!is_obstacle) {
 			// draw an obstacle if one is not already present, otherwise do
 			// nothing
-			ctx.fillStyle = "#000000";
-			ctx
-					.fillRect(current_cell.x
-							* grid.gridOptions.majorLines.separation + 1,
-							current_cell.y
-									* grid.gridOptions.majorLines.separation
-									+ 1,
-							grid.gridOptions.majorLines.separation - 2,
-							grid.gridOptions.majorLines.separation - 2);
+			obstacle.drawObstacle(current_cell);
 			// add this cell to the obstacles list
 			obstacle.obstacle_list.push(current_cell);
 		} else {
 			// remove an obstacle if one is present, otherwise do nothing
-			ctx
-					.clearRect(current_cell.x
-							* grid.gridOptions.majorLines.separation + 1,
-							current_cell.y
-									* grid.gridOptions.majorLines.separation
-									+ 1,
-							grid.gridOptions.majorLines.separation - 2,
-							grid.gridOptions.majorLines.separation - 2);
+			obstacle.removeObstacle(current_cell)
 			// remove this cell from the obstacles list
 			idx = -1;
 			$.each(obstacle.obstacle_list, function(index, value) {

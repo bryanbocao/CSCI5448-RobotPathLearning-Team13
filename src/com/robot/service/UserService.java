@@ -28,5 +28,9 @@ public class UserService
 		{
 				user.registerUser(username, password);
 		}
+		
+		public User getUserByUsername(String username){
+				return user.getUserByUsername(username);
+		}
 
 }

@@ -8,6 +8,10 @@
 
 <a href="#toggle-mode" class="btn btn-default" id="toggle-mode">Inserting Obstacles</a>
 <a href="#save" class="btn btn-default" id="save">Save Path</a>
+<c:if test="${hasPaths != null}">
+<a href="#loadLatest" class="btn btn-default" id="loadLatest">Replay Latest Path</a>
+</c:if>
+
 
 
 <content tag="siteMeshJavaScript">

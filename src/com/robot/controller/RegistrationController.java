@@ -3,6 +3,7 @@ package com.robot.controller;
 import java.sql.SQLException;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.robot.delegate.LoginDelegate;
 import com.robot.delegate.RegistrationDelegate;
 import com.robot.hibernate.User;
 
@@ -22,6 +24,10 @@ public class RegistrationController {
 
 	@Autowired
 	private RegistrationDelegate registrationDelegate;
+	
+	@Autowired
+	private LoginDelegate loginDelegate;
+
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String viewRegistration(Map<String, Object> model) {
@@ -32,12 +38,26 @@ public class RegistrationController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ModelAndView processRegistration(@Valid @ModelAttribute("userForm") User user, BindingResult bindingResult) {
+	public ModelAndView processRegistration(HttpSession session,
+			@Valid @ModelAttribute("userForm") User user, BindingResult bindingResult) {
 
-		System.out.println("testing...");
 		if (bindingResult.hasErrors()) {
 			System.out.println("Validation errors...");
-			return new ModelAndView("RegisterPage");
+			ModelAndView model = new ModelAndView("RegisterPage");
+			model.getModel().put("errormessage", "Error: Username or password are too short.");
+			return model;
+		}
+		
+		// check if this user already exists
+		try{
+			if(loginDelegate.getUserByUsername(user.getUsername()) != null){
+				// username already exists
+				ModelAndView model = new ModelAndView("RegisterPage");
+				model.getModel().put("errormessage", "Error: Username already exists.");
+				return model;
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
 		}
 
 		try {
@@ -46,6 +66,13 @@ public class RegistrationController {
 			e.printStackTrace();
 		}
 
+		// User has successfully registered, put him in the session
+		try {
+			session.setAttribute("USER", (Object)loginDelegate.getUserByUsername(user.getUsername()));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return new ModelAndView("redirect:/map");
 
 	}

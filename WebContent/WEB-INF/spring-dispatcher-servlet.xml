@@ -17,7 +17,7 @@
   <mvc:resources mapping="/css/**" location="/resources/css/"/>
   <mvc:resources mapping="/images/**" location="/resources/images/"/>
   <mvc:annotation-driven/>
-
+  
   <bean id="viewResolver"
     	class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
         <property name="prefix">
