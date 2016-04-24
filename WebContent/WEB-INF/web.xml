@@ -13,7 +13,12 @@
   <servlet-mapping>
  	<servlet-name>spring-dispatcher</servlet-name>
         <url-pattern>/</url-pattern>
+        <url-pattern>/login</url-pattern>
   </servlet-mapping>
+  
+     <welcome-file-list>
+       <welcome-file>login</welcome-file>
+    </welcome-file-list>
   
   
 <filter>
