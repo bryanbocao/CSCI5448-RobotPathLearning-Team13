@@ -20,13 +20,10 @@
         <url-pattern>/profile</url-pattern>
   </servlet-mapping>
   
-<<<<<<< HEAD
    <welcome-file-list>
        <welcome-file>login</welcome-file>
        </welcome-file-list>
   
-=======
->>>>>>> df25a2b8243aefdd236724e9e2ffd90a611a5461
   
 <filter>
   <filter-name>sitemesh</filter-name>
