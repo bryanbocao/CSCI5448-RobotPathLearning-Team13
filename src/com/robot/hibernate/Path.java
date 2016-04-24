@@ -1,7 +1,9 @@
 package com.robot.hibernate;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -13,8 +15,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -84,6 +88,23 @@ public class Path implements Serializable{
 		session.beginTransaction();
 		session.save(this);
 		session.getTransaction().commit();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<Path> getAllPaths(){
+		List<Path> paths;
+		
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		Query query = session.createQuery("from Path p");
+		paths = (List<Path>)query.list();
+		for (Path path : paths) {
+			path.user = null;
+		}
+	
+
+		return paths;
 	}
 	
 
