@@ -2,6 +2,7 @@ package com.robot.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,7 +31,7 @@ public class LoginController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ModelAndView executeLogin(HttpServletRequest request, HttpServletResponse response, 
+	public ModelAndView executeLogin(HttpSession session, HttpServletRequest request, HttpServletResponse response, 
 			@ModelAttribute("loginBean")LoginBean loginBean) {
 
 		ModelAndView model = null;
@@ -40,6 +41,7 @@ public class LoginController {
 			{
 					System.out.println("User Login Successful.");
 					request.setAttribute("success", loginBean.getUsername());
+					session.setAttribute("USER", (Object)loginDelegate.getUserByUsername(loginBean.getUsername()));
 					model = new ModelAndView("redirect:/map");
 			}
 			else

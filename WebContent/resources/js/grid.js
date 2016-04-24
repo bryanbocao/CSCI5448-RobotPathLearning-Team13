@@ -16,42 +16,68 @@ $(document).ready(function() {
 			$("#toggle-mode").text('Inserting Obstacles')
 		}
 	});
-	
+
 	// Save button to save a path
+	$("#save").click(function(e) {
+		if (!robot.finished) {
+			alert("The robot must finish the map in order to save the path.");
+		} else {
+			// user has finished the path, post the path to the sever via ajax:
+			var POSTdata = {
+				cells : robot.position_history,
+			};
+
+			$.ajax({
+				type : 'POST',
+				contentType : "application/json",
+				url : '/RobotLearning/map/save',
+				dataType : 'json',
+				data : JSON.stringify(POSTdata),
+				success : function(data) {
+					alert('path saved successfully.')
+				},
+				error : function(xhr, ajaxOptions, error) {
+					alert('error saving path: ' + error);
+				}
+			})
+		}
+		e.preventDefault();
+	});
 
 });
 
 // bind the arrow keys to control the robot
 $(document).keydown(function(e) {
-	if(!obstacle_mode && !robot.finished){
+	if (!obstacle_mode && !robot.finished) {
 		// erase the robot
 		robot.clear();
-		
+
 		// update it's position
 		switch (e.which) {
 		case 37: // left
 			robot.moveLeft();
 			break;
-	
+
 		case 38: // up
 			robot.moveUp();
 			break;
-	
+
 		case 39: // right
 			robot.moveRight();
 			break;
-	
+
 		case 40: // down
 			robot.moveDown();
 			break;
-	
+
 		default:
 			robot.draw();
 			return; // exit this handler for other keys
 		}
-		
+
 		// draw in the new position;
 		robot.draw();
+		robot.checkFinished();
 
 	}
 	e.preventDefault(); // prevent the default action (scroll / move caret)
@@ -79,6 +105,11 @@ var robot = {
 		ctx.drawImage(image, robot.getImagePosition().x, robot
 				.getImagePosition().y, robot.image_size, robot.image_size);
 	},
+	checkFinished : function() {
+		if (robot.position.x == 9 && robot.position.y == 0) {
+			robot.finished = true;
+		}
+	},
 	clear : function() {
 		var ctx = document.getElementById('cnv').getContext('2d');
 		ctx.fillStyle = "#FFFFFF";
@@ -86,7 +117,10 @@ var robot = {
 				robot.image_size, robot.image_size);
 	},
 	saveCurrentPosition : function() {
-		robot.position_history.push({x : robot.position.x, y : robot.position.y});
+		robot.position_history.push({
+			x : robot.position.x,
+			y : robot.position.y
+		});
 	},
 	moveTo : function(e) {
 		current_cell = grid.getSelectedCell(e);
@@ -106,48 +140,57 @@ var robot = {
 	},
 	moveLeft : function() {
 		// check if we can move in that direction
-		if(robot.position.x - 1 < 0 ||
-			obstacle.checkCellHasObstacle({x: robot.position.x - 1, y: robot.position.y})){
-				// end of grid, or there is an obstacle there, cannot move
-				return;
-			}
-		
+		if (robot.position.x - 1 < 0 || obstacle.checkCellHasObstacle({
+			x : robot.position.x - 1,
+			y : robot.position.y
+		})) {
+			// end of grid, or there is an obstacle there, cannot move
+			return;
+		}
+
 		robot.saveCurrentPosition();
 		robot.position.x--;
 	},
 	moveRight : function() {
 		// check if we can move in that direction
-		if(robot.position.x + 1 > grid.gridOptions.size.x - 1 ||
-			obstacle.checkCellHasObstacle({x: robot.position.x + 1, y: robot.position.y})){
-				// end of grid, or there is an obstacle there, cannot move
-				return;
-			}
-		
+		if (robot.position.x + 1 > grid.gridOptions.size.x - 1
+				|| obstacle.checkCellHasObstacle({
+					x : robot.position.x + 1,
+					y : robot.position.y
+				})) {
+			// end of grid, or there is an obstacle there, cannot move
+			return;
+		}
+
 		robot.saveCurrentPosition();
 		robot.position.x++;
-
 
 	},
 	moveDown : function() {
 		// check if we can move in that direction
-		if(robot.position.y + 1 > grid.gridOptions.size.y - 1 ||
-			obstacle.checkCellHasObstacle({x: robot.position.x, y: robot.position.y+1})){
-				// end of grid, or there is an obstacle there, cannot move
-				return;
-			}
-		
+		if (robot.position.y + 1 > grid.gridOptions.size.y - 1
+				|| obstacle.checkCellHasObstacle({
+					x : robot.position.x,
+					y : robot.position.y + 1
+				})) {
+			// end of grid, or there is an obstacle there, cannot move
+			return;
+		}
+
 		robot.saveCurrentPosition();
 		robot.position.y++;
 
 	},
 	moveUp : function() {
 		// check if we can move in that direction
-		if(robot.position.y - 1 < 0 ||
-			obstacle.checkCellHasObstacle({x: robot.position.x, y: robot.position.y-1})){
-				// end of grid, or there is an obstacle there, cannot move
-				return;
-			}
-		
+		if (robot.position.y - 1 < 0 || obstacle.checkCellHasObstacle({
+			x : robot.position.x,
+			y : robot.position.y - 1
+		})) {
+			// end of grid, or there is an obstacle there, cannot move
+			return;
+		}
+
 		robot.saveCurrentPosition();
 		robot.position.y--;
 	}

@@ -1,9 +1,17 @@
 package com.robot.hibernate;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -26,7 +34,13 @@ public class User {
 	@Size(min=4, max=12)
 	private String password;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date modifiedDate;
+	
 	private String userType;
+	
+	@OneToMany(mappedBy="user")
+	private List<Path> paths;
 	
 	public User(String username, String password){
 		this.username = username;
@@ -36,6 +50,18 @@ public class User {
 	
 	public User() {
 		this.userType = "user";
+	}
+	
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
+	
+	public List<Path> getPaths() {
+		return paths;
+	}
+
+	public void setPaths(List<Path> paths) {
+		this.paths = paths;
 	}
 
 	public int getId() {
@@ -90,5 +116,21 @@ public class User {
 		session.save(new_user);
 		session.getTransaction().commit();
 		
+	}
+	
+	public User getUserByUsername(String username){
+		
+		User current_user = null;
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		Query query = session.createQuery("from User where username= :name");
+		query.setString("name", username);
+		if( query.uniqueResult() != null){
+			// user found
+			current_user = (User)query.uniqueResult();
+		}
+
+		return current_user;
 	}
 }
