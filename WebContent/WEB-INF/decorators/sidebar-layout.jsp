@@ -37,9 +37,9 @@
 		<div id="sidebar-wrapper">
 			<ul class="sidebar-nav">
 				<li class="sidebar-brand"><a href="#"> Robot Path Learning </a></li>
-				<li><a href="#">My Profile</a></li>
-				<li><a href="#">New Path</a></li>
-				<li><a href="#">My Paths</a></li>
+				<li><a href="<spring:url value="/profile"/>">My Profile</a></li>
+				<li><a href="<spring:url value="/map"/>">New Path</a></li>
+				<!-- <li><a href="#">My Paths</a></li> -->
 				<li><a id="#btnlogout" href="<spring:url value="/login/logout"/>">Logout</a></li>
 			</ul>
 		</div>

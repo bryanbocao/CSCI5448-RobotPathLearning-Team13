@@ -120,6 +120,20 @@ public class User {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static List<User> getAllUsers(){
+		List<User> users;
+		
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		Session session = sessionFactory.getCurrentSession();
+		session.beginTransaction();
+		Query query = session.createQuery("from User u");
+		users = (List<User>)query.list();
+		return users;
+	}
+	
+	
+	
 	public User getUserByUsername(String username){
 		
 		User current_user = null;
@@ -135,4 +149,5 @@ public class User {
 
 		return current_user;
 	}
+	
 }
