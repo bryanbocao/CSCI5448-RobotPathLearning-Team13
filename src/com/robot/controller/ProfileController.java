@@ -1,5 +1,7 @@
 package com.robot.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -14,7 +16,7 @@ import com.robot.hibernate.User;
 public class ProfileController {
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView map(HttpSession session) {
+	public ModelAndView profile(HttpSession session) {
 
 		User user = (User) session.getAttribute("USER");
 		if (user != null) {
@@ -26,11 +28,13 @@ public class ProfileController {
 
 		ModelAndView model = new ModelAndView("views/ProfilePage");
 		
-		model.getModel().put("userType", user.getUserType());
-		
-		if(user.getUserType() == "admin"){
+		model.getModel().put("user", user);
+
+		if(user.getUserType().compareTo("admin") == 0){
 			// also send all the other users to the view
-			model.getModel().put("users", User.getAllUsers());
+			List<User> users =  User.getAllUsers();
+			System.out.println("Sending " + users.size() + " users to the view.");
+			model.getModel().put("allUsers", users);
 		}
 
 		return model;
