@@ -7,9 +7,8 @@ A website that displays a robot in a series of random environments. The user nav
 * Bo Cao          (Github: BryanBo-Cao),
 * Fernando Nobre  (Github: fernando10),
 * Zhongzhi Zhang  (Github: ZhongzhiZhang)
-* 
 
-Presentation:
-https://docs.google.com/presentation/d/1SAkZBnurTC-VbBnt2fsS--tU23ifjCoCbfGo2oTTeKU/edit#slide=id.g12cff47c12_0_58
 
+**Demo Youtube:**
+https://www.youtube.com/watch?v=gMJwqA66rKk
 
