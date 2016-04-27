@@ -10,5 +10,5 @@ A website that displays a robot in a series of random environments. The user nav
 
 
 **Demo Youtube:**
-https://www.youtube.com/watch?v=gMJwqA66rKk
+https://youtu.be/3LMuFmSQeUo
 
