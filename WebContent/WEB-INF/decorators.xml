@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<decorators defaultdir="/WEB-INF/decorators">
+	<!-- Any urls that are excluded will never be decorated by Sitemesh -->
+    <excludes>
+        <pattern>/login</pattern>
+        <pattern>/register</pattern>
+    </excludes>
+	
+	<decorator name="sidebar-layout" page="sidebar-layout.jsp">
+        <pattern>/*</pattern>     
+    </decorator>	
+</decorators>
